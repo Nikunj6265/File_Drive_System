@@ -1,0 +1,343 @@
+{
+	"info": {
+		"_postman_id": "filemanager-api-collection",
+		"name": "File Manager API",
+		"description": "Complete API collection for File Manager application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register",
+								""
+							]
+						},
+						"description": "Register a new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", jsonData.access);",
+									"    pm.environment.set(\"refresh_token\", jsonData.refresh);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "Login and receive JWT tokens"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh",
+								""
+							]
+						},
+						"description": "Refresh access token using refresh token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Folders",
+			"item": [
+				{
+					"name": "List Folders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/folders/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"folders",
+								""
+							]
+						},
+						"description": "Get all folders for the authenticated user"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Folder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My Documents\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/folders/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"folders",
+								""
+							]
+						},
+						"description": "Create a new folder"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Files",
+			"item": [
+				{
+					"name": "List Files",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/files/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files",
+								""
+							]
+						},
+						"description": "Get all files for the authenticated user"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "folder",
+									"value": "1",
+									"type": "text",
+									"description": "Folder ID"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"description": "File to upload (PDF, JPG, JPEG, PNG)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/files/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files",
+								""
+							]
+						},
+						"description": "Upload a file to a folder"
+					},
+					"response": []
+				},
+				{
+					"name": "Download File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/files/1/download/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"files",
+								"1",
+								"download",
+								""
+							],
+							"variable": [
+								{
+									"key": "file_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Download a file by ID"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
